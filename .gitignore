@@ -1,0 +1,8 @@
+# Project
+/.idea/
+/questions.json
+/topics.json
+
+# Python
+/.venv/
+__pycache__/
