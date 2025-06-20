@@ -1,0 +1,7 @@
+# URL with login screen
+url = 'https://laba.recruiter-ai-web.top/self-assessment/prepare/Russian/DE%252BHadoop?source=Russian&specialization=DE%252BHadoop'
+
+# Login data
+full_name = 'Full Name'
+email = 'my@email'
+coordinator_email = 'coordinator@email'

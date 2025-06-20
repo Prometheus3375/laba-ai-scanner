@@ -1,7 +1,7 @@
 # Project
-/.idea/
 /questions.json
 /topics.json
+/config.toml
 
 # Python
 /.venv/
