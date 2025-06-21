@@ -6,6 +6,8 @@ from typing import Any, TypedDict
 
 from playwright.sync_api import BrowserContext, Error, Page, expect, sync_playwright
 
+from timer import time_tracker
+
 CONFIG_FILE = 'config.toml'
 """
 Path to a configuration file with login information.
@@ -186,4 +188,5 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    main()
+    with time_tracker():
+        main()
