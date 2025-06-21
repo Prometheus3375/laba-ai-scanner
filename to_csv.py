@@ -6,6 +6,7 @@ import unicodedata
 from sentence_transformers import SentenceTransformer
 
 from globals import QuestionsJSON
+from timer import time_tracker
 
 INPUT_FILE = 'questions.json'
 """
@@ -100,4 +101,5 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    main()
+    with time_tracker():
+        main()
