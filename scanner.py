@@ -143,8 +143,8 @@ def record_questions(context: BrowserContext, topic_name: str, q_sets: QuestionS
         main_checkbox.click()
         main_checkbox.click()
 
-        # Select necessary topic name
-        page.get_by_text(topic_name, exact=True).get_by_role('checkbox').check()
+        # Select necessary topic
+        page.get_by_text(topic_name, exact=True).get_by_role('checkbox').click()
         # Create assessment
         page.get_by_text('Create assessment', exact=True).click()
         # Start exam
