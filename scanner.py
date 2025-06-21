@@ -124,24 +124,18 @@ def get_question_text(page: Page, /) -> str:
     )
 
 
-def record_questions(
-        context: BrowserContext,
-        first_category: str,
-        topic_name: str,
-        q_sets: QuestionSets,
-        /,
-        ) -> None:
+def record_questions(context: BrowserContext, topic_name: str, q_sets: QuestionSets, /) -> None:
     """
-    Opens Laba.AI, deselects the first category, selects the given topic and starts an exam.
+    Opens Laba.AI, resets topic selection, selects the given topic and starts an exam.
     Then records questions encountered to the given ``q_sets``.
     """
     with open_laba_ai(context) as page:
-        # Deselect the very first category.
-        # Sometimes it fails, in that case just skip this attempt.
-        try:
-            page.get_by_text(first_category).get_by_role('checkbox').uncheck()
-        except Error as e:
-            print(f'{datetime.now()}    {e}')
+        # Resets default selection by clicking the checkbox twice.
+        # .check() or .unchecck() do not work here as this checkbox is in a mixed state.
+        # They also often throw an error for an unknown reason when used of the first category.
+        main_checkbox = page.get_by_role('checkbox').first
+        main_checkbox.click()
+        main_checkbox.click()
 
         # Select necessary topic name
         page.get_by_text(topic_name, exact=True).get_by_role('checkbox').check()
@@ -172,7 +166,6 @@ def main() -> None:
         # Get existing topics
         with open_laba_ai(context) as page:
             topics = get_topics(page)
-            first_category = next(iter(topics))
 
         # Load existing questions
         questions = read_existing_questions(QUESTIONS_FILE, topics)
@@ -184,7 +177,10 @@ def main() -> None:
                 for subcategory, subcat_dict in category_dict.items():
                     for topic_name, q_sets in subcat_dict.items():
                         for _ in range(TIMES_PER_TOPIC):
-                            record_questions(context, first_category, topic_name, q_sets)
+                            try:
+                                record_questions(context, topic_name, q_sets)
+                            except Error as e:
+                                print(f'{datetime.now()}    {e}')
         finally:
             save_questions(questions, QUESTIONS_FILE)
 
