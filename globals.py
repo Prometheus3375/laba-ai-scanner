@@ -7,6 +7,13 @@ class QuestionSets(TypedDict):
     q3: set[str]
 
 
-type Questions = dict[str, dict[str, dict[str, QuestionSets]]]
+class QuestionLists(TypedDict):
+    q1: list[str]
+    q2: list[str]
+    q3: list[str]
 
-__all__ = 'QuestionSets', 'Questions'
+
+type Questions = dict[str, dict[str, dict[str, QuestionSets]]]
+type QuestionsJSON = dict[str, dict[str, dict[str, QuestionLists]]]
+
+__all__ = 'QuestionSets', 'QuestionLists', 'Questions', 'QuestionsJSON'
