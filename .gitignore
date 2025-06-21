@@ -1,6 +1,7 @@
 # Project
-/questions.*
-/topics.json
+/answers/
+/*.json
+/*.csv
 /config.toml
 
 # Python
