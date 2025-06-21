@@ -18,9 +18,19 @@ QUESTIONS_FILE = 'questions.json'
 Path to a file with questions.
 """
 
-CATEGORY = 'Методы инженерии и анализа данных'
+CATEGORIES = {'Методы инженерии и анализа данных'}
 """
-Which category to scan. Can be set to ``None`` to scan all of them.
+Which categories to scan. Can be set to ``None`` to scan all of them.
+"""
+
+SUBCATEGORIES = {}
+"""
+Which subcategories to scan. Can be set to ``None`` to scam all of them.
+"""
+
+TOPICS = {}
+"""
+Which topics to scan. Can be set to ``None`` to scam all of them.
 """
 
 TIMES_PER_TOPIC = 30
@@ -174,10 +184,14 @@ def main() -> None:
         try:
             # Iterate over questions
             for category, category_dict in questions.items():
-                if CATEGORY and category != CATEGORY: continue
+                if CATEGORIES and category not in CATEGORIES: continue
 
                 for subcategory, subcat_dict in category_dict.items():
+                    if SUBCATEGORIES and subcategory not in SUBCATEGORIES: continue
+
                     for topic_name, q_sets in subcat_dict.items():
+                        if TOPICS and topic_name not in TOPICS: continue
+
                         for _ in range(TIMES_PER_TOPIC):
                             try:
                                 record_questions(context, topic_name, q_sets)
