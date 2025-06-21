@@ -2,10 +2,11 @@ import json
 import tomllib
 from collections import defaultdict
 from datetime import datetime
-from typing import Any, TypedDict
+from typing import Any
 
 from playwright.sync_api import BrowserContext, Error, Page, expect, sync_playwright
 
+from globals import *
 from timer import time_tracker
 
 CONFIG_FILE = 'config.toml'
@@ -54,15 +55,6 @@ def open_laba_ai(context: BrowserContext, /) -> Page:
     emails.last.fill(config['coordinator_email'])
     page.get_by_text('Verify', exact=True).click()
     return page
-
-
-class QuestionSets(TypedDict):
-    q1: set[str]
-    q2: set[str]
-    q3: set[str]
-
-
-type Questions = dict[str, dict[str, dict[str, QuestionSets]]]
 
 
 def get_topics(page: Page, /) -> dict[str, dict[str, list[str]]]:
