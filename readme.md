@@ -10,12 +10,24 @@
    2. Run `python -m pip install playwright~=1.52.0` to install
       [playwright](https://github.com/microsoft/playwright).
    3. Run `playwright install chromium` to install Chromium browser for playwright.
+   4. Install PyTorch according to the [guide](https://pytorch.org/get-started/locally).
+   5. Run `python -m pip install sentence-transformers~=4.1.0` to install
+      [sentence-transformers](https://github.com/UKPLab/sentence-transformers/tree/master).
 5. Create empty file `questions.json` and fill it with `{}`.
 6. Copy `config-template.toml` as `config.toml` and fill it.
 
 # Usage
 
+## Retrieving questions from Laba.AI
+
 Check global variables in `scanner.py` and run the file via `python scanner.py`.
 Do nothing while script is running.
 Once script is completed, all recorded questions will be inside file
 `questions.json` per category, subcategory, topic and question level.
+
+## Exporting questions to CSV
+
+Check global variables in `to_csv.py` and run the file via `python to_csv.py`.
+Once script is completed, all questions from `questions.json` will be inside file `questions.csv`.
+In addition, every row will have a boolean flag
+whether its question duplicates another question of the same difficulty and topic.
