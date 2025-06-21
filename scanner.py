@@ -121,11 +121,13 @@ def get_question_text(page: Page, /) -> str:
     """
     Gets text of a question in Laba.AI.
     """
-    return (
+    text = (
         page
         .locator('[class*="text-sm text-balance select-none pointer-events-none"]')
         .inner_text()
     )
+    text = ' '.join(text.strip('.').split())
+    return text
 
 
 def record_questions(context: BrowserContext, topic_name: str, q_sets: QuestionSets, /) -> None:
