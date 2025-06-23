@@ -39,20 +39,20 @@ TIMES_PER_TOPIC = 30
 How many times scan every topic.
 """
 
+with open(CONFIG_FILE, 'rb') as f:
+    CONFIG = tomllib.load(f)
+
 
 def open_laba_ai(context: BrowserContext, /) -> Page:
     """
     Opens Laba.AI platform and logs in.
     """
-    with open(CONFIG_FILE, 'rb') as f:
-        config = tomllib.load(f)
-
     page = context.new_page()
-    page.goto(config['url'])
-    page.get_by_placeholder('Name Surname', exact=True).fill(config['full_name'])
+    page.goto(CONFIG['url'])
+    page.get_by_placeholder('Name Surname', exact=True).fill(CONFIG['full_name'])
     emails = page.get_by_placeholder('Use corporate email address only', exact=True)
-    emails.first.fill(config['email'])
-    emails.last.fill(config['coordinator_email'])
+    emails.first.fill(CONFIG['email'])
+    emails.last.fill(CONFIG['coordinator_email'])
     page.get_by_text('Verify', exact=True).click()
     return page
 
