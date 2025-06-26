@@ -177,15 +177,16 @@ def main() -> None:
         questions = read_existing_questions(QUESTIONS_FILE, topics)
         try:
             # Iterate over questions
-            for category, category_dict in questions.items():
+            for category, category_dict in topics.items():
                 if CATEGORIES and category not in CATEGORIES: continue
 
-                for subcategory, subcat_dict in category_dict.items():
+                for subcategory, topics in category_dict.items():
                     if SUBCATEGORIES and subcategory not in SUBCATEGORIES: continue
 
-                    for topic_name, q_sets in subcat_dict.items():
+                    for topic_name in topics:
                         if TOPICS and topic_name not in TOPICS: continue
 
+                        q_sets = questions[category][subcategory][topic_name]
                         for _ in range(TIMES_PER_TOPIC):
                             try:
                                 record_questions(context, topic_name, q_sets)
