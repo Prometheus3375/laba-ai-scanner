@@ -127,7 +127,8 @@ def get_question_text(page: Page, /) -> str:
         .locator('[class*="text-sm text-balance select-none pointer-events-none"]')
         .inner_text()
     )
-    text = ' '.join(text.strip('.').split())
+    text = text.replace('ё', 'е').strip('.')
+    text = ' '.join(text.split())
     return text
 
 
