@@ -6,7 +6,7 @@ import unicodedata
 from sentence_transformers import SentenceTransformer
 
 from globals import QuestionsJSON
-from timer import time_tracker
+from lib.time import time_tracker
 
 INPUT_FILE = 'questions.json'
 """
