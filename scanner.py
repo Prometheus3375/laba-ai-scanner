@@ -39,8 +39,9 @@ TIMES_PER_TOPIC = 30
 How many times scan every topic.
 """
 
-with open(CONFIG_FILE, 'rb') as f:
-    CONFIG = tomllib.load(f)
+with open(CONFIG_FILE, 'rb') as _f:
+    CONFIG = tomllib.load(_f)
+    del _f
 
 
 def open_laba_ai(context: BrowserContext, /) -> Page:
