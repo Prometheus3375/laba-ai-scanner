@@ -184,7 +184,11 @@ def start_scanner(config: ScannerConfig, /) -> None:
         logger.info('Loading questions stored locally...')
         questions = read_existing_questions(questions_filepath, topic_hierarchy)
 
-        logger.info('The scanner is started')
+        logger.info(
+            'The scanner is started. '
+            'Do nothing on PC while it runs! '
+            'Press Ctrl+C twice to stop it'
+            )
         try:
             # Iterate over existing topic hierarchy
             for category, category_dict in topic_hierarchy.items():
