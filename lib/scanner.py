@@ -161,6 +161,8 @@ def start_scanner(config: ScannerConfig, /) -> None:
     """
     Stats Laba.AI scanner with the given config.
     """
+    logger.info('Starting the scanner...')
+
     questions_filepath = config.output_filepath
     categories = config.categories
     subcategories = config.subcategories
@@ -175,12 +177,14 @@ def start_scanner(config: ScannerConfig, /) -> None:
         # Open an empty page to keep browser open
         context.new_page(),
         ):
-        # Get existing topics
+        logger.info('Getting existing topic hierarchy on the site...')
         with open_laba_ai(context, config) as page:
             topic_hierarchy = get_topics(page)
 
-        # Load existing questions
+        logger.info('Loading questions stored locally...')
         questions = read_existing_questions(questions_filepath, topic_hierarchy)
+
+        logger.info('The scanner is started')
         try:
             # Iterate over existing topic hierarchy
             for category, category_dict in topic_hierarchy.items():
@@ -203,7 +207,9 @@ def start_scanner(config: ScannerConfig, /) -> None:
                                 success_times += success
 
         finally:
+            logger.info(f'Saving recorded questions to {questions_filepath!r}...')
             save_questions(questions, questions_filepath)
+            logger.info(f'Questions are saved; the scanner is stopped')
 
 
 __all__ = 'start_scanner',
