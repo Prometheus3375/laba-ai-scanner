@@ -7,12 +7,12 @@
    [tutorial](https://docs.python.org/3/library/venv.html).
 4. Install and update necessary packages:
    1. Run `python -m pip install -U pip setuptools wheel` to update building packages.
-   2. Run `python -m pip install playwright~=1.52.0` to install
-      [playwright](https://github.com/microsoft/playwright).
-   3. Run `playwright install chromium` to install Chromium browser for playwright.
-   4. Install PyTorch according to the [guide](https://pytorch.org/get-started/locally).
-   5. Run `python -m pip install sentence-transformers~=4.1.0` to install
-      [sentence-transformers](https://github.com/UKPLab/sentence-transformers/tree/master).
+   2. Run `python -m pip install pip-tools~=7.4.0` to install
+      [pip-tools](https://github.com/jazzband/pip-tools/).
+   3. Install PyTorch according to the [guide](https://pytorch.org/get-started/locally).
+   4. Run `python -m piptools compile -U --strip-extras` to generate file `requirements.txt`.
+   5. Run `python -m pip install -r requirements.txt --no-deps` to install all necessary packages.
+   6. Run `playwright install chromium` to install Chromium browser for playwright.
 5. Create empty file `questions.json` and fill it with `{}`.
 6. Copy `config-template.toml` as `config.toml` and fill it.
 
