@@ -46,8 +46,8 @@ def format_seconds(seconds: float, /) -> str:
 @contextmanager
 def time_tracker(
         msg_fmt: str = 'Time elapsed: {}',
-        log: Callable[[str], None] = print,
         /,
+        log: Callable[[str], None] = print,
         ) -> Iterator[None]:
     """
     A context manager to track time of the underlined block of code.
