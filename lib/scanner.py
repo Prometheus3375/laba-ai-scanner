@@ -193,11 +193,15 @@ def start_scanner(config: ScannerConfig, /) -> None:
                         if topics and topic not in topics: continue
 
                         q_sets = questions[category][subcategory][topic]
-                        for _ in range(times_per_topic):
+                        success_times = 0
+                        while success_times < times_per_topic:
                             try:
-                                record_questions(context, config, topic, q_sets)
+                                success = record_questions(context, config, topic, q_sets)
                             except Error as e:
                                 logger.exception(str(e))
+                            else:
+                                success_times += success
+
         finally:
             save_questions(questions, questions_filepath)
 
