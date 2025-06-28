@@ -199,11 +199,12 @@ class Scanner:
         """
         if self._is_running:
             self._is_running = False
+            logger.info('Stopping the scanner...')
             self._thread.join()
             self._thread = None
 
     def _thread_target(self, /) -> None:
-        logger.info('Starting the scanner')
+        logger.info('Starting the scanner...')
 
         questions_filepath = self.config.output_filepath
         categories = self.config.categories
