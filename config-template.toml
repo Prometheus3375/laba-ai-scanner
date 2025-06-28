@@ -1,3 +1,4 @@
+[scanner]
 # URL with login screen
 url = 'https://laba.recruiter-ai-web.top/self-assessment/prepare/Russian/DE%252BHadoop?source=Russian&specialization=DE%252BHadoop'
 
@@ -5,3 +6,41 @@ url = 'https://laba.recruiter-ai-web.top/self-assessment/prepare/Russian/DE%252B
 full_name = 'Full Name'
 email = 'my@email'
 coordinator_email = 'coordinator@email'
+
+# File with the questions stored. Initially must be empty dictionary, i.e., {}.
+output_filepath = 'questions.json'
+
+# A list of categories to scan. If empty, every category is scanned.
+categories = ['Hadoop']
+
+# A list of subcategories to scan. If empty, every subcategory is scanned.
+subcategories = []
+
+# A list of topics to scan. If empty, every topic is scanned.
+topics = []
+
+# How many times every topic is scanned. Must be a positive integer.
+times_per_topic = 40
+
+
+[logging]
+# This section configures the logging of the program.
+# Visit https://docs.python.org/3/library/logging.config.html#dictionary-schema-details
+# to check the documentation for this section.
+
+version = 1
+disable_existing_loggers = false
+
+[logging.formatters.default]
+format = '{asctime}	[{name}]	{levelname:<8}	{message}'
+datefmt = '%Y-%m-%d %H:%M:%S'
+style = '{'
+
+[logging.handlers.default]
+formatter = 'default'
+class = 'logging.StreamHandler'
+stream = 'ext://sys.stdout'
+
+[logging.root]
+handlers = ['default']
+level = 'INFO'
