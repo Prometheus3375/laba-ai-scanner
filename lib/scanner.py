@@ -1,6 +1,7 @@
 import json
 from collections import defaultdict
-from logging import getLogger
+from logging import Logger, getLogger
+from threading import Thread
 from typing import Any
 
 from playwright.sync_api import BrowserContext, Error, Page, expect, sync_playwright
@@ -157,63 +158,104 @@ def record_questions(
         return True
 
 
-def start_scanner(config: ScannerConfig, /) -> None:
+class Scanner:
     """
-    Stats Laba.AI scanner with the given config.
+    A class for scanning Laba.AI website for questions.
     """
-    logger.info('Starting the scanner...')
+    __slots__ = 'config', '_thread', '_is_running'
 
-    questions_filepath = config.output_filepath
-    categories = config.categories
-    subcategories = config.subcategories
-    topics = config.topics
-    times_per_topic = config.times_per_topic
+    def __init__(self, config: ScannerConfig, /) -> None:
+        self.config = config
+        self._thread: Thread | None = None
+        self._is_running = False
 
-    with (
-        sync_playwright() as p,
-        # Cannot get questions in headless mode
-        p.chromium.launch(headless=False) as browser,
-        browser.new_context(permissions=['microphone', 'camera']) as context,
-        # Open an empty page to keep browser open
-        context.new_page(),
-        ):
-        logger.info('Getting existing topic hierarchy on the site...')
-        with open_laba_ai(context, config) as page:
-            topic_hierarchy = get_topics(page)
+    @property
+    def logger(self, /) -> Logger:
+        """
+        Logger of this instance.
+        """
+        return logger
 
-        logger.info('Loading questions stored locally...')
-        questions = read_existing_questions(questions_filepath, topic_hierarchy)
+    @property
+    def is_running(self, /) -> bool:
+        """
+        Whether this instance is running.
+        """
+        return self._is_running
 
-        logger.info(
-            'The scanner is started. '
-            'Do nothing on PC while it runs! '
-            'Press Ctrl+C twice to stop it'
-            )
-        try:
-            # Iterate over existing topic hierarchy
-            for category, category_dict in topic_hierarchy.items():
-                if categories and category not in categories: continue
+    def start(self, /) -> None:
+        """
+        Stats this scanner.
+        """
+        if self._is_running or self._thread is not None:
+            return
 
-                for subcategory, topic_list in category_dict.items():
-                    if subcategories and subcategory not in subcategories: continue
+        self._thread = Thread(target=self._thread_target, name='scanner')
+        self._thread.start()
 
-                    for topic in topic_list:
-                        if topics and topic not in topics: continue
+    def stop(self, /) -> None:
+        """
+        Stops this instance.
+        """
+        if self._is_running:
+            self._is_running = False
+            self._thread.join()
+            self._thread = None
 
-                        q_sets = questions[category][subcategory][topic]
-                        success_times = 0
-                        while success_times < times_per_topic:
-                            try:
-                                success = record_questions(context, config, topic, q_sets)
-                            except Error as e:
-                                logger.exception(str(e))
-                            else:
-                                success_times += success
+    def _thread_target(self, /) -> None:
+        logger.info('Starting the scanner')
 
-        finally:
-            logger.info(f'Saving recorded questions to {questions_filepath!r}...')
-            save_questions(questions, questions_filepath)
-            logger.info(f'Questions are saved; the scanner is stopped')
+        questions_filepath = self.config.output_filepath
+        categories = self.config.categories
+        subcategories = self.config.subcategories
+        topics = self.config.topics
+        times_per_topic = self.config.times_per_topic
+
+        with (
+            sync_playwright() as p,
+            # Cannot get questions in headless mode
+            p.chromium.launch(handle_sigint=False, headless=False) as browser,
+            browser.new_context(permissions=['microphone', 'camera']) as context,
+            # Open an empty page to keep browser open
+            context.new_page(),
+            ):
+            logger.info('Getting existing topic hierarchy on the site')
+            with open_laba_ai(context, self.config) as page:
+                topic_hierarchy = get_topics(page)
+
+            logger.info(f'Loading questions stored locally in {questions_filepath}')
+            questions = read_existing_questions(questions_filepath, topic_hierarchy)
+
+            logger.info('The scanner is started. Do nothing on PC while it runs!')
+            self._is_running = True
+            try:
+                # Iterate over existing topic hierarchy
+                for category, category_dict in topic_hierarchy.items():
+                    if categories and category not in categories: continue
+
+                    for subcategory, topic_list in category_dict.items():
+                        if subcategories and subcategory not in subcategories: continue
+
+                        for topic in topic_list:
+                            if topics and topic not in topics: continue
+
+                            q_sets = questions[category][subcategory][topic]
+                            success_times = 0
+                            while success_times < times_per_topic:
+                                # Exit immediately if this instance is stopped
+                                if not self._is_running: return
+
+                                try:
+                                    success = record_questions(context, self.config, topic, q_sets)
+                                except Error as e:
+                                    logger.exception(str(e))
+                                else:
+                                    success_times += success
+
+            finally:
+                logger.info(f'Saving recorded questions to {questions_filepath!r}')
+                save_questions(questions, questions_filepath)
+                logger.info('The scanner is stopped')
 
 
-__all__ = 'start_scanner',
+__all__ = 'Scanner',
