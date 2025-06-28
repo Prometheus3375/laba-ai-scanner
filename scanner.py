@@ -37,7 +37,7 @@ def main() -> None:
             logger.info('Press Ctrl+C to stop this script')
             scanner.start()
             while scanner.is_running:
-                sleep(1)
+                sleep(60)
 
         except KeyboardInterrupt:
             logger.info('Ctrl+C received, stopping the script...')
