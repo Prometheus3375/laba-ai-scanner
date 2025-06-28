@@ -34,7 +34,7 @@ def get_topics(page: Page, /) -> TopicHierarchy:
     """
     topics = defaultdict(lambda: defaultdict(list))
     locator = page.get_by_role('checkbox')
-    expect(locator.first).to_be_visible()
+    expect(locator.first).to_be_visible(timeout=60_000)
 
     for i in range(locator.count()):
         box = locator.nth(i)
