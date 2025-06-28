@@ -138,7 +138,7 @@ def record_questions(context: BrowserContext, topic_name: str, q_sets: QuestionS
     Then records questions encountered to the given ``q_sets``.
     """
     with open_laba_ai(context) as page:
-        # Resets default selection by clicking the first category.
+        # Remove default selection by clicking the first category.
         # .check() or .uncheck() do not work on the first checkbox as it is in a mixed state.
         # They also often throw an error for an unknown reason when used of the first category.
         first_category = page.get_by_role('checkbox').nth(1)
@@ -149,7 +149,7 @@ def record_questions(context: BrowserContext, topic_name: str, q_sets: QuestionS
         # Create assessment
         page.get_by_text('Create assessment', exact=True).click()
         # Start exam
-        page.get_by_text('Start exam', exact=True).click()
+        page.get_by_text('Start exam', exact=True).click(timeout=300_000)
 
         # Questions
         q1 = get_question_text(page)
