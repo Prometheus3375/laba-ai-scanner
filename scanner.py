@@ -170,6 +170,8 @@ def main() -> None:
         # Cannot get questions in headless mode
         p.chromium.launch(headless=False) as browser,
         browser.new_context(permissions=['microphone', 'camera']) as context,
+        # Open an empty page to keep browser open
+        context.new_page(),
         ):
         # Get existing topics
         with open_laba_ai(context) as page:
