@@ -20,8 +20,8 @@
 
 ## Retrieving questions from Laba.AI
 
-Check global variables in `scanner.py` and run the file via `python scanner.py`.
-Do nothing while script is running.
+Start scanning Laba.AI via running `python scanner.py` and follow log instructions.
+
 Once script is completed, all recorded questions will be inside file
 `questions.json` per category, subcategory, topic and question level.
 
