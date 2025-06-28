@@ -158,6 +158,9 @@ def record_questions(
 
 
 def start_scanner(config: ScannerConfig, /) -> None:
+    """
+    Stats Laba.AI scanner with the given config.
+    """
     questions_filepath = config.output_filepath
     categories = config.categories
     subcategories = config.subcategories
