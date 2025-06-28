@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 from logging import getLogger
+from time import sleep
 
 from lib.configs import read_config
 from lib.scanner import Scanner
@@ -33,10 +34,11 @@ def main() -> None:
 
     with time_tracker('The script is stopped. Time elapsed: {}', logger.info):
         try:
-            logger.info('Press Enter or Ctrl+C to stop this script')
+            logger.info('Press Ctrl+C to stop this script')
             scanner.start()
-            input()
-            logger.info('Enter received, stopping the script...')
+            while scanner.is_running:
+                sleep(1)
+
         except KeyboardInterrupt:
             logger.info('Ctrl+C received, stopping the script...')
         except Exception:
