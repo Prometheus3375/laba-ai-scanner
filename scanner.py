@@ -138,12 +138,11 @@ def record_questions(context: BrowserContext, topic_name: str, q_sets: QuestionS
     Then records questions encountered to the given ``q_sets``.
     """
     with open_laba_ai(context) as page:
-        # Resets default selection by clicking the checkbox twice.
-        # .check() or .unchecck() do not work here as this checkbox is in a mixed state.
+        # Resets default selection by clicking the first category.
+        # .check() or .uncheck() do not work on the first checkbox as it is in a mixed state.
         # They also often throw an error for an unknown reason when used of the first category.
-        main_checkbox = page.get_by_role('checkbox').first
-        main_checkbox.click()
-        main_checkbox.click()
+        first_category = page.get_by_role('checkbox').nth(1)
+        first_category.click()
 
         # Select necessary topic
         page.get_by_text(topic_name, exact=True).get_by_role('checkbox').click()
