@@ -3,7 +3,7 @@ from contextlib import contextmanager
 
 from time import perf_counter
 
-DURATION_UNIT_NAMES = 'yr', 'mo', 'wk', 'd', 'h', 'min', 's'
+DURATION_UNIT_NAMES = 'yr', 'mo', 'wk', 'd', 'h', 'm', 's'
 DURATION_UNITS = {
     'years':        60 * 60 * 24 * 365,
     'months':       60 * 60 * 24 * 30,
