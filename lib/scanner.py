@@ -1,12 +1,14 @@
 import json
 from collections import defaultdict
-from datetime import datetime
+from logging import getLogger
 from typing import Any
 
 from playwright.sync_api import BrowserContext, Error, Page, expect, sync_playwright
 
 from lib.configs import ScannerConfig
 from lib.globals import QuestionSets, Questions
+
+logger = getLogger('scanner')
 
 type TopicHierarchy = dict[str, dict[str, list[str]]]
 
@@ -136,9 +138,9 @@ def record_questions(
             .strip()
         )
         if topic != actual_topic:
-            print(
-                f'{datetime.now()}\t'
-                f'Actual topic name is {actual_topic!r} instead of {topic!r}'
+            logger.warning(
+                f'Actual topic name is {actual_topic!r} instead of {topic!r}; '
+                f'aborting this record attempt'
                 )
             return False
 
@@ -192,7 +194,7 @@ def start_scanner(config: ScannerConfig, /) -> None:
                             try:
                                 record_questions(context, config, topic, q_sets)
                             except Error as e:
-                                print(f'{datetime.now()}\t{e}')
+                                logger.exception(str(e))
         finally:
             save_questions(questions, questions_filepath)
 
