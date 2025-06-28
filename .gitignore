@@ -1,8 +1,10 @@
 # Project
-/answers/
-/*.json
-/*.csv
 /config.toml
+/requirements.txt
+
+*.txt
+*.json
+*.csv
 
 # Python
 /.venv/
