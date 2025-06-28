@@ -190,7 +190,7 @@ class Scanner:
         if self._is_running or self._thread is not None:
             return
 
-        self._thread = Thread(target=self._thread_target, name='scanner')
+        self._thread = Thread(target=self._thread_target, name='scanner', daemon=True)
         self._thread.start()
 
     def stop(self, /) -> None:
