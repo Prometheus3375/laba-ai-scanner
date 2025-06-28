@@ -1,7 +1,7 @@
 import json
 from collections import defaultdict
 from logging import Logger, getLogger
-from threading import Thread
+from threading import Event, Thread
 from typing import Any
 
 from playwright.sync_api import BrowserContext, Error, Page, expect, sync_playwright
@@ -158,15 +158,78 @@ def record_questions(
         return True
 
 
+def scan(config: ScannerConfig, stop_event: Event, /) -> None:
+    """
+    Starts scanning Laba.AI. Gracefully stops if at some point the given event is set.
+    """
+    logger.info('Starting the scanner...')
+
+    questions_filepath = config.output_filepath
+    categories = config.categories
+    subcategories = config.subcategories
+    topics = config.topics
+    times_per_topic = config.times_per_topic
+
+    with (
+        sync_playwright() as p,
+        # Cannot get questions in headless mode
+        p.chromium.launch(handle_sigint=False, headless=False) as browser,
+        browser.new_context(permissions=['microphone', 'camera']) as context,
+        # Open an empty page to keep browser open
+        context.new_page(),
+        ):
+        logger.info('Getting existing topic hierarchy on the site')
+        with open_laba_ai(context, config) as page:
+            topic_hierarchy = get_topics(page)
+
+        if stop_event.is_set():
+            logger.info('The scanner is stopped')
+            return
+
+        logger.info(f'Loading questions stored locally in {questions_filepath}')
+        questions = read_existing_questions(questions_filepath, topic_hierarchy)
+
+        logger.info('The scanner is started. You can minimize the browser')
+        try:
+            # Iterate over existing topic hierarchy
+            for category, category_dict in topic_hierarchy.items():
+                if categories and category not in categories: continue
+
+                for subcategory, topic_list in category_dict.items():
+                    if subcategories and subcategory not in subcategories: continue
+
+                    for topic in topic_list:
+                        if topics and topic not in topics: continue
+
+                        q_sets = questions[category][subcategory][topic]
+                        success_times = 0
+                        while success_times < times_per_topic:
+                            # Exit immediately if the event is set
+                            if stop_event.is_set(): return
+
+                            try:
+                                success = record_questions(context, config, topic, q_sets)
+                            except Error as e:
+                                logger.exception(str(e))
+                            else:
+                                success_times += success
+
+        finally:
+            logger.info(f'Saving recorded questions to {questions_filepath!r}')
+            save_questions(questions, questions_filepath)
+            logger.info('The scanner is stopped')
+
+
 class Scanner:
     """
     A class for scanning Laba.AI website for questions.
     """
-    __slots__ = 'config', '_thread', '_is_running'
+    __slots__ = 'config', '_thread', '_stop_event', '_is_running'
 
     def __init__(self, config: ScannerConfig, /) -> None:
         self.config = config
         self._thread: Thread | None = None
+        self._stop_event: Event | None = None
         self._is_running = False
 
     @property
@@ -185,78 +248,32 @@ class Scanner:
 
     def start(self, /) -> None:
         """
-        Stats this scanner.
+        Starts this scanner.
         """
-        if self._is_running or self._thread is not None:
-            return
+        if self._is_running: return
 
+        self._is_running = True
         self._thread = Thread(target=self._thread_target, name='scanner', daemon=True)
+        self._stop_event = Event()
         self._thread.start()
 
     def stop(self, /) -> None:
         """
-        Stops this instance.
+        Stops this scanner.
         """
         if self._is_running:
-            self._is_running = False
-            logger.info('Stopping the scanner...')
+            if not self._stop_event.is_set():
+                logger.info('Stopping the scanner...')
+                self._stop_event.set()
+
             self._thread.join()
-            self._thread = None
 
     def _thread_target(self, /) -> None:
-        logger.info('Starting the scanner...')
+        scan(self.config, self._stop_event)
 
-        questions_filepath = self.config.output_filepath
-        categories = self.config.categories
-        subcategories = self.config.subcategories
-        topics = self.config.topics
-        times_per_topic = self.config.times_per_topic
-
-        with (
-            sync_playwright() as p,
-            # Cannot get questions in headless mode
-            p.chromium.launch(handle_sigint=False, headless=False) as browser,
-            browser.new_context(permissions=['microphone', 'camera']) as context,
-            # Open an empty page to keep browser open
-            context.new_page(),
-            ):
-            logger.info('Getting existing topic hierarchy on the site')
-            with open_laba_ai(context, self.config) as page:
-                topic_hierarchy = get_topics(page)
-
-            logger.info(f'Loading questions stored locally in {questions_filepath}')
-            questions = read_existing_questions(questions_filepath, topic_hierarchy)
-
-            logger.info('The scanner is started. Do nothing on PC while it runs!')
-            self._is_running = True
-            try:
-                # Iterate over existing topic hierarchy
-                for category, category_dict in topic_hierarchy.items():
-                    if categories and category not in categories: continue
-
-                    for subcategory, topic_list in category_dict.items():
-                        if subcategories and subcategory not in subcategories: continue
-
-                        for topic in topic_list:
-                            if topics and topic not in topics: continue
-
-                            q_sets = questions[category][subcategory][topic]
-                            success_times = 0
-                            while success_times < times_per_topic:
-                                # Exit immediately if this instance is stopped
-                                if not self._is_running: return
-
-                                try:
-                                    success = record_questions(context, self.config, topic, q_sets)
-                                except Error as e:
-                                    logger.exception(str(e))
-                                else:
-                                    success_times += success
-
-            finally:
-                logger.info(f'Saving recorded questions to {questions_filepath!r}')
-                save_questions(questions, questions_filepath)
-                logger.info('The scanner is stopped')
+        self._thread = None
+        self._stop_event = None
+        self._is_running = False
 
 
 __all__ = 'Scanner',
