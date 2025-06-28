@@ -132,10 +132,11 @@ def get_question_text(page: Page, /) -> str:
     return text
 
 
-def record_questions(context: BrowserContext, topic_name: str, q_sets: QuestionSets, /) -> None:
+def record_questions(context: BrowserContext, topic_name: str, q_sets: QuestionSets, /) -> bool:
     """
     Opens Laba.AI, resets topic selection, selects the given topic and starts an exam.
     Then records questions encountered to the given ``q_sets``.
+    Returns ``True`` on success and ``False`` otherwise.
     """
     with open_laba_ai(context) as page:
         # Remove default selection by clicking the first category.
@@ -151,6 +152,21 @@ def record_questions(context: BrowserContext, topic_name: str, q_sets: QuestionS
         # Start exam
         page.get_by_text('Start exam', exact=True).click(timeout=300_000)
 
+        # Verify topic
+        # Failsafe for cases when default selection was not removed.
+        actual_topic = (
+            page.
+            locator('[class="text-base mt-1 font-medium truncate"]')
+            .inner_text()
+            .strip()
+        )
+        if topic_name != actual_topic:
+            print(
+                f'{datetime.now()}\t'
+                f'Actual topic name is {actual_topic!r} instead of {topic_name!r}'
+                )
+            return False
+
         # Questions
         q1 = get_question_text(page)
         page.get_by_text('Next question', exact=True).click()
@@ -161,6 +177,7 @@ def record_questions(context: BrowserContext, topic_name: str, q_sets: QuestionS
         q_sets['q1'].add(q1)
         q_sets['q2'].add(q2)
         q_sets['q3'].add(q3)
+        return True
 
 
 def main() -> None:
@@ -194,7 +211,7 @@ def main() -> None:
                             try:
                                 record_questions(context, topic_name, q_sets)
                             except Error as e:
-                                print(f'{datetime.now()}    {e}')
+                                print(f'{datetime.now()}\t{e}')
         finally:
             save_questions(questions, QUESTIONS_FILE)
 
