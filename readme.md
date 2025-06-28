@@ -20,7 +20,7 @@
 
 ## Retrieving questions from Laba.AI
 
-Start scanning Laba.AI via running `python scanner.py` and follow log instructions.
+Start scanning Laba.AI via running `python scan.py` and follow log instructions.
 
 Once script is completed, all recorded questions will be inside file
 `questions.json` per category, subcategory, topic and question level.
