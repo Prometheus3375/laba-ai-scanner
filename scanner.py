@@ -6,7 +6,7 @@ from typing import Any
 
 from playwright.sync_api import BrowserContext, Error, Page, expect, sync_playwright
 
-from globals import *
+from lib.globals import *
 from lib.time import time_tracker
 
 CONFIG_FILE = 'config.toml'

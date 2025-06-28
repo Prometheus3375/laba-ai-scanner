@@ -5,7 +5,7 @@ from collections.abc import Iterator
 import unicodedata
 from sentence_transformers import SentenceTransformer
 
-from globals import QuestionsJSON
+from lib.globals import QuestionsJSON
 from lib.time import time_tracker
 
 INPUT_FILE = 'questions.json'
