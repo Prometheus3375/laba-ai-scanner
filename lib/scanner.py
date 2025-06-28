@@ -118,14 +118,14 @@ def record_questions(
     """
     with open_laba_ai(context, config) as page:
         # .check() or .uncheck() do not work on the first checkbox as it is in a mixed state.
-        # They also often throw an error for an unknown reason sometimes.
+        # They also sometimes throw an error for an unknown reason.
         # https://github.com/microsoft/playwright/issues/13470
 
-        # Wait until the very first checkbox becomes visible
-        checkboxes = page.get_by_role('checkbox')
-        expect(checkboxes.first).to_be_visible()
+        # Wait until first category checkbox becomes visible
+        first_category_checkbox = page.get_by_role('checkbox').nth(1)
+        expect(first_category_checkbox).to_be_visible(timeout=60_000)
         # Remove default selection by clicking the first category
-        checkboxes.nth(1).click()
+        first_category_checkbox.click()
 
         # Select necessary topic
         page.get_by_text(topic, exact=True).get_by_role('checkbox').click()
@@ -137,8 +137,8 @@ def record_questions(
         # Verify topic
         # Failsafe for cases when default selection was not removed.
         actual_topic = (
-            page.
-            locator('[class="text-base mt-1 font-medium truncate"]')
+            page
+            .locator('[class="text-base mt-1 font-medium truncate"]')
             .inner_text()
             .strip()
         )
