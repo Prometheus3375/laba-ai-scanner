@@ -190,7 +190,7 @@ def scan(config: ScannerConfig, stop_event: Event, /) -> None:
             logger.info('The scanner is stopped')
             return
 
-        logger.info(f'Loading questions stored locally in {questions_filepath}')
+        logger.info(f'Loading questions stored locally in {questions_filepath!r}')
         questions = read_existing_questions(questions_filepath, topic_hierarchy)
 
         logger.info('The scanner is started. You can minimize the browser')
@@ -214,7 +214,7 @@ def scan(config: ScannerConfig, stop_event: Event, /) -> None:
                             try:
                                 success = record_questions(context, config, topic, q_sets)
                             except Error as e:
-                                logger.exception(str(e))
+                                logger.error(str(e))
                             else:
                                 success_times += success
 
