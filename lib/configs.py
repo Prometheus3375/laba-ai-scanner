@@ -26,7 +26,7 @@ class ScannerConfig(BaseConfig):
     times_per_topic: PositiveInt
 
 
-class WholeConfig(BaseConfig):
+class WholeConfig(BaseConfig, extra='ignore'):
     """
     A collection of all possible configurations.
     """
