@@ -146,7 +146,7 @@ def analyze(config: AnalyzerConfig, /) -> None:
 
         logger.info(
             f'The analyzer is stopped. '
-            f'Counts: '
+            f'Question counts: '
             f'total = {count_total}, '
             f'unique = {count_unique}, '
             f'written = {count_written}'
