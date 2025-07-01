@@ -1,13 +1,6 @@
-from argparse import ArgumentParser
-from logging import getLogger
-from time import sleep
-
-from lib.configs import read_config
-from lib.scanner import Scanner
-from lib.time import time_tracker
-
-
 def main() -> None:
+    from argparse import ArgumentParser
+
     parser = ArgumentParser(
         description='A script for scanning Laba.AI website for questions',
         add_help=False,
@@ -28,6 +21,14 @@ def main() -> None:
         )
 
     args = parser.parse_args()
+
+    from logging import getLogger
+    from time import sleep
+
+    from lib.configs import read_config
+    from lib.scanner import Scanner
+    from lib.time import time_tracker
+
     config = read_config(args.config_file)
     scanner = Scanner(config.scanner)
     logger = getLogger('script')
