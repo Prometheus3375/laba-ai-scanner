@@ -103,7 +103,7 @@ version = 1
 disable_existing_loggers = false
 
 [logging.formatters.default]
-format = '{asctime}	[{name}]	{levelname:<8}	{message}'
+format = '{asctime}	[{name}]	{levelname}	{message}'
 datefmt = '%Y-%m-%d %H:%M:%S'
 style = '{'
 
