@@ -7,7 +7,7 @@ full_name = 'Full Name'
 email = 'my@email'
 coordinator_email = 'coordinator@email'
 
-# File with the questions stored. Initially must be empty dictionary, i.e., {}.
+# JSON file with the questions stored. Initially must be empty dictionary, i.e., {}.
 output_filepath = 'questions.json'
 
 # A list of categories to scan. If empty, every category is scanned.
@@ -21,6 +21,77 @@ topics = []
 
 # How many times every topic is scanned. Must be a positive integer.
 times_per_topic = 40
+
+
+[analyzer]
+# JSON file with questions retrieved by the scanner.
+input_filepath = 'questions.json'
+
+# A list of categories to analyze. If empty, every category is analyzed.
+categories = ['Hadoop']
+
+# A list of subcategories to analyze. If empty, every subcategory is analyzed.
+subcategories = []
+
+# A list of topics to analyze. If empty, every topic is analyzed.
+topics = []
+
+# CSV file with the result.
+output_filepath = 'questions-week-two.csv'
+
+# Whether to include columns for category, subcategory and topic.
+include_category = false
+include_subcategory = false
+include_topic = true
+
+# Whether to include rows with questions marked as duplicates.
+# If set to false, then column with duplication flags is not included.
+include_duplicates = true
+
+# Model to use as a sentence transformer.
+# Available models can be found here:
+# https://www.sbert.net/docs/sentence_transformer/pretrained_models.html#original-models
+sentence_transformer_model = 'paraphrase-mpnet-base-v2'
+
+# A list of regexes describing phrases to be replaced with a space.
+# This list is joined by '|' and then compiled with ignorecase flag.
+# This rule is applied after analyzer.text_to_replace.
+text_to_remove = [
+#    '\b(как|так)(ой|ого|ому|ими?|ом|ая|ую|ою|ое|ие|их)?\b',
+#    '\bкаков(ого|ому|ыми?|ом|а|ой|ую|ою|о|ые?|ых)?\b',
+#    '\b(что|(для )?чего|чему|(в )?чем)\b',
+#    """\\b(\
+#    объясните|опишите|приведите|назовите|расскажите( об?)?\
+#    |перечислите|укажите|сравните|определите|поясните|предложите|обсудите|оцените\
+#    |знаете|можете|оптимизируете|используете|оцениваете|считаете|определяете\
+#    |вы (подходите к|видите|обеспечите|предпочитаете)?\
+#    )\\b""",
+    """\\((\
+    [123]NF|CDC|Command Query Responsibility Segregation|High Availability|edit log\
+    |Quorum Journal Manager|HA|watchers|CBO|UDAF|JOIN|UDF|Resilient Distributed Dataset\
+    |User Defined Function|AQE|Write Ahead Log|Massively Parallel Processing|offset management\
+    |Directed Acyclic Graph|Executors|Task|Operator|Data Build Tool\
+    )\\)""",
+]
+
+[analyzer.text_to_replace]
+# A list of strings (not regexes!) to be replaced with the correspondent other string.
+
+'Hadoop Distributed File System (HDFS)' = 'HDFS'
+'Quorum Journal Manager (QJM)' = 'QJM'
+'Write-Ahead Log (WAL)' = 'WAL'
+'Directed Acyclic Graph (DAG)' = 'DAG'
+'?' = '.'
+
+[analyzer.hdbscan_params]
+# This section contains hyperparameters for HDBSCAN clustering.
+# Their description can be found here:
+# https://scikit-learn.org/stable/modules/generated/sklearn.cluster.HDBSCAN.html
+# Note: parameter store_centers is always set to 'medoid'.
+
+min_cluster_size = 2
+cluster_selection_epsilon = 0.05
+metric = 'cosine'
 
 
 [logging]
@@ -40,6 +111,9 @@ style = '{'
 formatter = 'default'
 class = 'logging.StreamHandler'
 stream = 'ext://sys.stdout'
+
+[logging.loggers.'sentence_transformers.SentenceTransformer']
+level = 'WARNING'
 
 [logging.root]
 handlers = ['default']
