@@ -121,7 +121,7 @@ def analyze(config: AnalyzerConfig, /) -> None:
                     count_total += len(cluster)
                     count_unique += 1
                     if config.include_duplicates:
-                        for question in sorted(cluster):
+                        for question in cluster:
                             flag = question is not cluster.core_sample
                             row = make_row(category, subcategory, topic, level, question, flag)
                             writer.writerow(row)

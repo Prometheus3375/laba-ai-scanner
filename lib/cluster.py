@@ -1,11 +1,15 @@
 import sys
 from collections.abc import Iterable, Iterator, Sequence
+from operator import itemgetter
 from typing import Any, Self, overload
 
 from sentence_transformers import SentenceTransformer
 from sklearn.cluster import HDBSCAN
 
 from .globals import PreprocessFunc
+
+_FIRST_ITEM = itemgetter(0)
+_SECOND_ITEM = itemgetter(1)
 
 
 @Sequence.register
@@ -22,9 +26,9 @@ class Cluster:
             core_sample: str,
             /,
             ) -> None:
-        self._data = tuple(data)
-        self._probabilities = tuple(probabilities)
-        assert len(self._data) == len(self._probabilities)
+        data_prob = sorted(zip(data, probabilities, strict=True), key=_FIRST_ITEM)
+        self._data = tuple(map(_FIRST_ITEM, data_prob))
+        self._probabilities = tuple(map(_SECOND_ITEM, data_prob))
         self._core_idx = self._data.index(core_sample)
 
     @property
