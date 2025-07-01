@@ -26,11 +26,33 @@ class ScannerConfig(BaseConfig):
     times_per_topic: PositiveInt
 
 
+class AnalyzerConfig(BaseConfig):
+    """
+    Configuration for an analyzer.
+    """
+    input_filepath: str
+    categories: frozenset[str] = Field(strict=False)
+    subcategories: frozenset[str] = Field(strict=False)
+    topics: frozenset[str] = Field(strict=False)
+
+    output_filepath: str
+    include_category: bool
+    include_subcategory: bool
+    include_topic: bool
+    include_duplicates: bool
+
+    sentence_transformer_model: str
+    text_to_remove: list[str]
+    text_to_replace: dict[str, str]
+    hdbscan_params: dict[str, Any]
+
+
 class WholeConfig(BaseConfig, extra='ignore'):
     """
     A collection of all possible configurations.
     """
     scanner: ScannerConfig
+    analyzer: AnalyzerConfig
     logging: dict[str, Any]
 
 
@@ -46,4 +68,4 @@ def read_config(filepath: str, /) -> WholeConfig:
     return config
 
 
-__all__ = 'BaseConfig', 'ScannerConfig', 'WholeConfig', 'read_config'
+__all__ = 'BaseConfig', 'ScannerConfig', 'AnalyzerConfig', 'WholeConfig', 'read_config'
