@@ -5,7 +5,7 @@ from sentence_transformers import SentenceTransformer
 from .globals import PreprocessFunc
 
 
-def analyze_strings(
+def analyze_sentences(
         data: Sequence[str],
         preprocess_func: PreprocessFunc,
         model_name: str,
@@ -48,4 +48,4 @@ def analyze_strings(
     return zip(data, flags)
 
 
-__all__ = 'analyze_strings',
+__all__ = 'analyze_sentences',
