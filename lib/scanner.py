@@ -6,8 +6,8 @@ from typing import Any
 
 from playwright.sync_api import BrowserContext, Error, Page, expect, sync_playwright
 
-from lib.configs import ScannerConfig
-from lib.globals import QuestionSets, Questions
+from .configs import ScannerConfig
+from .globals import QuestionSets, Questions
 
 logger = getLogger('scanner')
 

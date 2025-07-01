@@ -4,7 +4,7 @@ from collections import Counter
 
 import unicodedata
 
-from lib.globals import QuestionsJSON
+from .globals import QuestionsJSON
 
 PATTERN_SYMBOLS = re.compile(r'[^\s\w]')
 
