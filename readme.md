@@ -20,14 +20,20 @@
 
 ## Retrieving questions from Laba.AI
 
-Start scanning Laba.AI via running `python scan.py` and follow log instructions.
+Configure section `scanner` in `config.toml`,
+start scanning Laba.AI via running `python scan.py` and follow log instructions.
 
 Once script is completed, all recorded questions will be inside file
 `questions.json` per category, subcategory, topic and question level.
 
 ## Exporting questions to CSV
 
-Check global variables in `to_csv.py` and run the file via `python to_csv.py`.
-Once script is completed, all questions from `questions.json` will be inside file `questions.csv`.
-In addition, every row will have a boolean flag
-whether its question duplicates another question of the same difficulty and topic.
+Configure section `analyzer` in `config.toml`
+and start analyzing gathered questions via running `python analyze.py`.
+
+Once script is completed, questions from `questions.json` will be inside file `questions.csv`.
+Columns inside the CSV file are in the following order:
+category, subcategory, topic, level, question and duplication flag.
+Some columns can be omitted according to the configuration.
+Duplication flag indicates
+whether the question in a row duplicates another question of the same difficulty and topic.
