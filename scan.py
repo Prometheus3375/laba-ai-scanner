@@ -29,8 +29,8 @@ def main() -> None:
     from lib.scanner import Scanner
     from lib.time import time_tracker
 
-    config = read_config(args.config_file)
-    scanner = Scanner(config.scanner)
+    config = read_config(args.config_file).scanner
+    scanner = Scanner(config)
     logger = getLogger('script')
 
     with time_tracker('The script is stopped. Time elapsed: {}', logger.info):
