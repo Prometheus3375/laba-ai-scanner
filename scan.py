@@ -17,7 +17,7 @@ def main() -> None:
         'config_file',
         nargs='?',
         default='config.toml',
-        help='Path to the configuration file for the scanner. Defaults to "config.toml".',
+        help='Path to the configuration file. Defaults to "config.toml".',
         )
 
     parser.add_argument(
