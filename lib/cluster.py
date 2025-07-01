@@ -1,9 +1,11 @@
 import sys
-from collections.abc import Callable, Iterable, Iterator, Sequence
+from collections.abc import Iterable, Iterator, Sequence
 from typing import Any, Self, overload
 
 from sentence_transformers import SentenceTransformer
 from sklearn.cluster import HDBSCAN
+
+from .globals import PreprocessFunc
 
 
 @Sequence.register
@@ -117,7 +119,7 @@ class Cluster:
 
 def clusterize_sentences(
         data: Sequence[str],
-        preprocess_func: Callable[[Sequence[str]], Iterable[str]],
+        preprocess_func: PreprocessFunc,
         model_name: str,
         hdbscan_params: dict[str, Any],
         /,

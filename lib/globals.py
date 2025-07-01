@@ -1,3 +1,4 @@
+from collections.abc import Callable, Iterator, Sequence
 from typing import TypedDict
 
 
@@ -15,5 +16,6 @@ class QuestionLists(TypedDict):
 
 type Questions = dict[str, dict[str, dict[str, QuestionSets]]]
 type QuestionsJSON = dict[str, dict[str, dict[str, QuestionLists]]]
+type PreprocessFunc = Callable[[Sequence[str]], Iterator[str]]
 
-__all__ = 'QuestionSets', 'QuestionLists', 'Questions', 'QuestionsJSON'
+__all__ = 'QuestionSets', 'QuestionLists', 'Questions', 'QuestionsJSON', 'PreprocessFunc'

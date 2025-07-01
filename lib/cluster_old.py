@@ -1,11 +1,13 @@
-from collections.abc import Callable, Iterable, Iterator, Sequence
+from collections.abc import Iterator, Sequence
 
 from sentence_transformers import SentenceTransformer
+
+from .globals import PreprocessFunc
 
 
 def analyze_strings(
         data: Sequence[str],
-        preprocess_func: Callable[[Sequence[str]], Iterable[str]],
+        preprocess_func: PreprocessFunc,
         model_name: str,
         threshold: float,
         /
