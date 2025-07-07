@@ -132,6 +132,23 @@ class Cluster:
         """
         return sum(1 for v in self._data if v is value or v == value)
 
+    # Do not consider probabilities for comparisons and hash
+
+    def __hash__(self, /) -> int:
+        return self._data.__hash__()
+
+    def __eq__(self, other: Any, /) -> bool:
+        if isinstance(other, Cluster):
+            return self._data == other._data
+
+        return NotImplemented
+
+    def __lt__(self, other: Self, /) -> bool:
+        if isinstance(other, Cluster):
+            return self._data < other._data
+
+        return NotImplemented
+
 
 def clusterize_sentences(
         data: Sequence[str],
@@ -169,6 +186,8 @@ def clusterize_sentences(
         medoid_embed = tuple(medoid_embed)
         clusters.append(Cluster.from_group(group, embed2sent[medoid_embed]))
 
+    # Sort clusters to preserve their order if different settings yield the same result
+    clusters.sort()
     return clusters
 
 
