@@ -7,7 +7,7 @@
    [tutorial](https://docs.python.org/3/library/venv.html).
 4. Install and update necessary packages:
    1. Run `python -m pip install -U pip setuptools wheel` to update building packages.
-   2. Run `python -m pip install pip-tools~=7.4.0` to install
+   2. Run `python -m pip install pip-tools~=7.4.1` to install
       [pip-tools](https://github.com/jazzband/pip-tools/).
    3. Install PyTorch according to the [guide](https://pytorch.org/get-started/locally).
    4. Run `python -m piptools compile -U --strip-extras` to generate file `requirements.txt`.
