@@ -81,7 +81,7 @@ text_to_remove = [
 # Note: parameter store_centers is always set to 'medoid'.
 
 min_cluster_size = 2
-cluster_selection_epsilon = 0.07
+cluster_selection_epsilon = 0.085
 metric = 'cosine'
 
 
