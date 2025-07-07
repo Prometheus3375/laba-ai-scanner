@@ -37,7 +37,7 @@ subcategories = []
 topics = []
 
 # CSV file with the result.
-output_filepath = 'questions-week-two.csv'
+output_filepath = '.questions/week-2.csv'
 
 # Whether to include columns for category, subcategory and topic.
 include_category = false
@@ -51,21 +51,12 @@ include_duplicates = true
 # Model to use as a sentence transformer.
 # Available models can be found here:
 # https://www.sbert.net/docs/sentence_transformer/pretrained_models.html#original-models
-sentence_transformer_model = 'paraphrase-mpnet-base-v2'
+sentence_transformer_model = 'distiluse-base-multilingual-cased-v1'
 
 # A list of regexes describing phrases to be replaced with a space.
 # This list is joined by '|' and then compiled with ignorecase flag.
 # This rule is applied after analyzer.text_to_replace.
 text_to_remove = [
-#    '\b(как|так)(ой|ого|ому|ими?|ом|ая|ую|ою|ое|ие|их)?\b',
-#    '\bкаков(ого|ому|ыми?|ом|а|ой|ую|ою|о|ые?|ых)?\b',
-#    '\b(что|(для )?чего|чему|(в )?чем)\b',
-#    """\\b(\
-#    объясните|опишите|приведите|назовите|расскажите( об?)?\
-#    |перечислите|укажите|сравните|определите|поясните|предложите|обсудите|оцените\
-#    |знаете|можете|оптимизируете|используете|оцениваете|считаете|определяете\
-#    |вы (подходите к|видите|обеспечите|предпочитаете)?\
-#    )\\b""",
     """\\((\
     [123]NF|CDC|Command Query Responsibility Segregation|High Availability|edit log\
     |Quorum Journal Manager|HA|watchers|CBO|UDAF|JOIN|UDF|Resilient Distributed Dataset\
