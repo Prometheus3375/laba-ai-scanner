@@ -4,6 +4,8 @@ from collections.abc import Iterator, Sequence
 from logging import getLogger
 from typing import Protocol
 
+from sentence_transformers import SentenceTransformer
+
 from .cluster import clusterize_sentences
 from .configs import AnalyzerConfig
 from .functions import iterate_questions
@@ -86,7 +88,7 @@ def analyze(config: AnalyzerConfig, /) -> None:
     """
     logger.info('Starting the analyzer...')
 
-    model_name = config.sentence_transformer_model
+    model = SentenceTransformer(config.sentence_transformer_model)
     hdbscan_params = config.hdbscan_params.copy()
     preprocess = make_preprocessing_function(config)
     make_row = make_row_maker(config)
@@ -113,7 +115,7 @@ def analyze(config: AnalyzerConfig, /) -> None:
                 clusters = clusterize_sentences(
                     q_list,
                     preprocess,
-                    model_name,
+                    model,
                     hdbscan_params,
                     )
 

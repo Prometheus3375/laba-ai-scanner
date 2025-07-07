@@ -124,7 +124,7 @@ class Cluster:
 def clusterize_sentences(
         data: Sequence[str],
         preprocess_func: PreprocessFunc,
-        model_name: str,
+        model: SentenceTransformer,
         hdbscan_params: dict[str, Any],
         /,
         ) -> list[Cluster]:
@@ -136,7 +136,6 @@ def clusterize_sentences(
     Returns the list of resulting clusters.
     """
     prep_data = list(preprocess_func(data))
-    model = SentenceTransformer(model_name)
     embeddings = model.encode(prep_data, convert_to_numpy=True)
 
     hdbscan_params['store_centers'] = 'medoid'
