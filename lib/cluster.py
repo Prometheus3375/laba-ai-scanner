@@ -17,7 +17,9 @@ class Cluster:
     """
     A class repressing a cluster of strings.
     """
-    __slots__ = '_data', '_probabilities', '_core_idx'
+    __slots__ = '_data', '_probabilities'
+
+    _core_idx = 0
 
     def __init__(
             self,
@@ -27,9 +29,18 @@ class Cluster:
             /,
             ) -> None:
         data_prob = sorted(zip(data, probabilities, strict=True), key=_FIRST_ITEM)
+        for i, sp in enumerate(data_prob):
+            if sp[0] == core_sample:
+                if i != self._core_idx:
+                    del data_prob[i]
+                    data_prob.insert(self._core_idx, sp)
+
+                break
+        else:
+            raise ValueError(f'{core_sample!r} is not in the data')
+
         self._data = tuple(map(_FIRST_ITEM, data_prob))
         self._probabilities = tuple(map(_SECOND_ITEM, data_prob))
-        self._core_idx = self._data.index(core_sample)
 
     @property
     def core_sample(self, /) -> str:
@@ -58,12 +69,13 @@ class Cluster:
         The core sample will be marked with '>'.
         """
         max_length = max(map(len, self._data))
+        core_sample = self.core_sample
         result = []
-        for i, (q, p) in enumerate(zip(self._data, self._probabilities)):
-            if i == self._core_idx:
-                result.append(f'> {q:{max_length}}: {p:.6f}')
+        for s, p in zip(self._data, self._probabilities):
+            if s is core_sample:
+                result.append(f'> {s:{max_length}}: {p:.6f}')
             else:
-                result.append(f'- {q:{max_length}}: {p:.6f}')
+                result.append(f'- {s:{max_length}}: {p:.6f}')
 
         return '\n'.join(result)
 
