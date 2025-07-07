@@ -1,6 +1,6 @@
 import csv
 import re
-from collections.abc import Iterator, Sequence
+from collections.abc import Iterator, Mapping, Sequence
 from logging import getLogger
 from typing import Protocol
 
@@ -14,12 +14,15 @@ from .globals import PreprocessFunc
 logger = getLogger('analyzer')
 
 
-def make_preprocessing_function(config: AnalyzerConfig, /) -> PreprocessFunc:
+def make_preprocessing_function(
+        text_to_replace: Mapping[str, str],
+        text_to_remove: Sequence[str],
+        /,
+        ) -> PreprocessFunc:
     """
     Creates a preprocessing function from the given config.
     """
-    text_to_replace = config.text_to_replace.copy()
-    pattern_text_to_remove = re.compile('|'.join(config.text_to_remove), re.I)
+    pattern_text_to_remove = re.compile('|'.join(text_to_remove), re.I)
 
     def preprocess(data: Sequence[str], /) -> Iterator[str]:
         for s in data:
@@ -54,9 +57,15 @@ class RowMaker(Protocol):
             ) -> list: ...
 
 
-def make_row_maker(config: AnalyzerConfig, /) -> RowMaker:
+def make_row_maker(
+        *,
+        include_category: bool,
+        include_subcategory: bool,
+        include_topic: bool,
+        include_duplicate_flag: bool,
+        ) -> RowMaker:
     """
-    Creates a :class:`RowMaker` from the given config.
+    Creates a :class:`RowMaker` with the given settings.
     """
     def make_row(
             category: str,
@@ -68,13 +77,13 @@ def make_row_maker(config: AnalyzerConfig, /) -> RowMaker:
             /,
             ) -> list:
         row = []
-        if config.include_category: row.append(category)
-        if config.include_subcategory: row.append(subcategory)
-        if config.include_topic: row.append(topic)
+        if include_category: row.append(category)
+        if include_subcategory: row.append(subcategory)
+        if include_topic: row.append(topic)
 
         row.append(level)
         row.append(question)
-        if config.include_duplicates:
+        if include_duplicate_flag:
             row.append(flag)
 
         return row
@@ -90,8 +99,15 @@ def analyze(config: AnalyzerConfig, /) -> None:
 
     model = SentenceTransformer(config.sentence_transformer_model)
     hdbscan_params = config.hdbscan_params.copy()
-    preprocess = make_preprocessing_function(config)
-    make_row = make_row_maker(config)
+    preprocess = make_preprocessing_function(config.text_to_replace.copy(), config.text_to_remove)
+
+    include_duplicates = config.include_duplicates
+    make_row = make_row_maker(
+        include_category=config.include_category,
+        include_subcategory=config.include_subcategory,
+        include_topic=config.include_topic,
+        include_duplicate_flag=include_duplicates,
+        )
 
     iterator = iterate_questions(
         config.input_filepath,
@@ -122,7 +138,7 @@ def analyze(config: AnalyzerConfig, /) -> None:
                 for cluster in clusters:
                     count_total += len(cluster)
                     count_unique += 1
-                    if config.include_duplicates:
+                    if include_duplicates:
                         for question in cluster:
                             flag = question is not cluster.core_sample
                             row = make_row(category, subcategory, topic, level, question, flag)
