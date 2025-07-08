@@ -171,4 +171,4 @@ def analyze(config: AnalyzerConfig, /) -> None:
             )
 
 
-__all__ = 'analyze',
+__all__ = 'analyze', 'make_preprocessing_function', 'make_row_maker'
