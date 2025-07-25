@@ -53,6 +53,12 @@ include_duplicates = true
 # https://www.sbert.net/docs/sentence_transformer/pretrained_models.html#original-models
 sentence_transformer_model = 'distiluse-base-multilingual-cased-v1'
 
+# A string containing punctuation characters.
+# After replacing and removing text,
+# this option is used to strip specified characters
+# and to remove spaces before specified characters.
+punctuation = '.,:;?!'
+
 # A list of regexes describing phrases to be replaced with a space.
 # This list is joined by '|' and then compiled with ignorecase flag.
 # This rule is applied after analyzer.text_to_replace.
