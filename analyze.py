@@ -34,7 +34,10 @@ def main() -> None:
 
         from lib.analyzer import analyze
 
-        analyze(config)
+        try:
+            analyze(config)
+        except KeyboardInterrupt:
+            logger.info('Ctrl+C received, stopping the script...')
 
 
 if __name__ == '__main__':
