@@ -42,6 +42,7 @@ class AnalyzerConfig(BaseConfig):
     include_duplicates: bool
 
     sentence_transformer_model: str
+    punctuation: str
     text_to_remove: list[str]
     text_to_replace: dict[str, str]
     hdbscan_params: dict[str, Any]
