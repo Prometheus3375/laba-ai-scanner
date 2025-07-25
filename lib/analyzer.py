@@ -15,6 +15,7 @@ logger = getLogger('analyzer')
 
 
 def make_preprocessing_function(
+        punctuation: str,
         text_to_replace: Mapping[str, str],
         text_to_remove: Sequence[str],
         /,
@@ -23,6 +24,9 @@ def make_preprocessing_function(
     Creates a preprocessing function from the given config.
     """
     pattern_text_to_remove = re.compile('|'.join(text_to_remove), re.I)
+    pattern_spaces = re.compile(r'\s+')
+    pattern_space_punctuation = re.compile(rf' ([{punctuation}])')
+    space_punctuation = ' ' + punctuation
 
     def preprocess(data: Sequence[str], /) -> Iterator[str]:
         for s in data:
@@ -32,10 +36,12 @@ def make_preprocessing_function(
 
             # Remove text
             s = pattern_text_to_remove.sub(' ', s)
-            # Clear punctuation on edges
-            s = s.strip(' .,;:')
+            # Remove punctuation on edges
+            s = s.strip(space_punctuation)
             # Purge consecutive spaces
-            s = ' '.join(s.split())
+            s = pattern_spaces.sub(' ', s)
+            # Remove spaces before punctuation
+            s = pattern_space_punctuation.sub(r'\1', s)
             yield s
 
     return preprocess
@@ -99,7 +105,11 @@ def analyze(config: AnalyzerConfig, /) -> None:
 
     model = SentenceTransformer(config.sentence_transformer_model)
     hdbscan_params = config.hdbscan_params.copy()
-    preprocess = make_preprocessing_function(config.text_to_replace.copy(), config.text_to_remove)
+    preprocess = make_preprocessing_function(
+        config.punctuation,
+        config.text_to_replace.copy(),
+        config.text_to_remove,
+        )
 
     include_duplicates = config.include_duplicates
     make_row = make_row_maker(
