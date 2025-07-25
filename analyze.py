@@ -38,6 +38,8 @@ def main() -> None:
             analyze(config)
         except KeyboardInterrupt:
             logger.info('Ctrl+C received, stopping the script...')
+        except Exception:
+            logger.exception('An unknown error has occurred, the script will be stopped shortly')
 
 
 if __name__ == '__main__':
