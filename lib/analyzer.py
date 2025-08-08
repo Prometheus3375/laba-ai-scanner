@@ -161,12 +161,6 @@ def analyze(config: AnalyzerConfig, /) -> None:
                         writer.writerow(row)
                         count_written += 1
 
-    except KeyboardInterrupt:
-        pass
-
-    except Exception:
-        logger.exception('An error has occurred')
-
     finally:
         if csvfile:
             logger.info(f'Saving result to {config.output_filepath!r}')
