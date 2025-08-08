@@ -37,7 +37,7 @@ subcategories = []
 topics = []
 
 # CSV file with the result.
-output_filepath = '.questions/week-2.csv'
+output_filepath = '.questions/week-3.csv'
 
 # Whether to include columns for category, subcategory and topic.
 include_category = false

@@ -31,7 +31,8 @@ Once script is completed, all recorded questions will be inside file
 Configure section `analyzer` in `config.toml`
 and start analyzing gathered questions via running `python analyze.py`.
 
-Once script is completed, questions from `questions.json` will be inside file `questions.csv`.
+Once script is completed, questions from `questions.json`
+will be inside directory `.questions`.
 Columns inside the CSV file are in the following order:
 category, subcategory, topic, level, question and duplication flag.
 Some columns can be omitted according to the configuration.
