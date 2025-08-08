@@ -1,4 +1,5 @@
 import csv
+import os
 import re
 from collections.abc import Iterator, Mapping, Sequence
 from logging import getLogger
@@ -131,6 +132,10 @@ def analyze(config: AnalyzerConfig, /) -> None:
     count_unique = 0
     count_written = 0
     try:
+        csvfile_dir = os.path.dirname(config.output_filepath)
+        if csvfile_dir:
+            os.makedirs(csvfile_dir, exist_ok=True)
+
         csvfile = open(config.output_filepath, 'w', newline='')
         writer = csv.writer(csvfile, dialect='excel')
 
