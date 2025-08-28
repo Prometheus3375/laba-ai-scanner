@@ -96,9 +96,6 @@ metric = 'cosine'
 input_filepath = '.questions/week-3-distiluse-0.085.csv'
 
 # CSV file with the predefined answers.
-# Must have the same columns in the same order as input file
-# and an additional column with answers in the end.
-# Empty answers are ignored.
 # Can be an empty string if there are no predefined answers.
 predefined_filepath = ''
 
