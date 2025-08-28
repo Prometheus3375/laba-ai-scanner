@@ -5,6 +5,7 @@
 *.txt
 *.json
 *.csv
+!.system-prompts/*.txt
 
 # Python
 /.venv/
