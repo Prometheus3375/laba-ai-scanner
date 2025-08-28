@@ -34,9 +34,9 @@ def query(config: QuerierConfig, /) -> None:
 
     client = DeepSeekClient.from_config(config.deepseek)
     predefined = get_predefined_answers(config.predefined_filepath)
-    logger.info(f'Loaded {len(predefined)} answers')
+    logger.info(f'Loaded {len(predefined)} predefined answers')
 
-    frequency = config.log_frequency
+    log_frequency = config.log_frequency
     inp = None
     out = None
     line_no = 0
@@ -67,14 +67,14 @@ def query(config: QuerierConfig, /) -> None:
                     else:
                         logger.warning(f'Empty answer for question at line {line_no}')
                         count_queried_err += 1
+
                 else:
                     answer = ''
                     count_ignored += 1
 
             row.append(answer)
             writer.writerow(row)
-
-            if line_no % frequency == 0:
+            if line_no % log_frequency == 0:
                 logger.info(
                     f'Answer counts: '
                     f'predefined = {count_predefined}, '
