@@ -13,7 +13,7 @@ class BaseConfig(BaseModel, strict=True, extra='forbid', frozen=True):
 
 class ScannerConfig(BaseConfig):
     """
-    Configuration for a scanner.
+    Configuration for the scanner.
     """
     url: str
     full_name: str
@@ -28,7 +28,7 @@ class ScannerConfig(BaseConfig):
 
 class AnalyzerConfig(BaseConfig):
     """
-    Configuration for an analyzer.
+    Configuration for the analyzer.
     """
     input_filepath: str
     categories: frozenset[str] = Field(strict=False)
@@ -48,12 +48,33 @@ class AnalyzerConfig(BaseConfig):
     hdbscan_params: dict[str, Any]
 
 
+class DeepSeekConfig(BaseConfig):
+    """
+    Configuration for DeepSeek LLM.
+    """
+    api_key: str
+    system_prompt_filepath: str
+    api_params: dict[str, Any]
+
+
+class QuerierConfig(BaseConfig):
+    """
+    Configuration for the querier.
+    """
+    input_filepath: str
+    predefined_filepath: str
+    output_filepath: str
+    log_frequency: PositiveInt
+    deepseek: DeepSeekConfig
+
+
 class WholeConfig(BaseConfig, extra='ignore'):
     """
     A collection of all possible configurations.
     """
     scanner: ScannerConfig
     analyzer: AnalyzerConfig
+    querier: QuerierConfig
     logging: dict[str, Any]
 
 
@@ -69,4 +90,12 @@ def read_config(filepath: str, /) -> WholeConfig:
     return config
 
 
-__all__ = 'BaseConfig', 'ScannerConfig', 'AnalyzerConfig', 'WholeConfig', 'read_config'
+__all__ = (
+    'BaseConfig',
+    'ScannerConfig',
+    'AnalyzerConfig',
+    'DeepSeekConfig',
+    'QuerierConfig',
+    'WholeConfig',
+    'read_config',
+    )
