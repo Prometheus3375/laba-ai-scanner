@@ -62,3 +62,31 @@ then the predefined answer is used, and DeepSeek is not queried.
 If querier fails, the output file is saved with the answers obtained so far.
 One can specify the output file also as a file with the predefined answers
 to resume querying from the point of failure.
+
+### System prompts for DeepSeek
+
+System prompts are simple text files, but support additional formatting.
+Once system prompts is read, all line breaks are replaced with spaces,
+then all consecutive spaces are replaced with a single space.
+
+In order to add line breaks to the final system prompt, separate paragraphs with symbol `|`.
+For example:
+
+```
+This is the first paragraph of   the system prompt.
+It contains two sentences.  
+|
+|
+This is the second   paragraph of the system prompt.
+It is separated by two line   breaks from the first one.  
+
+|
+
+|
+
+|
+
+This is the third paragraph and it is separated by three line breaks from the second one.
+```
+
+These separation lines must contain only one bar and nothing more in order to work correctly.
