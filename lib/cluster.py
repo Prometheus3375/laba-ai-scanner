@@ -219,10 +219,13 @@ def clusterize_sentences(
             if array_equal(embedding, est.medoids_[label]):
                 medoids[label] = sample
 
-    for group, medoid in zip(groups, medoids, strict=True):
-        clusters.append(Cluster(group, medoid))
+    clusters.extend(
+        Cluster(group, medoid)
+        for group, medoid in zip(groups, medoids, strict=True)
+        )
 
-    # Sort clusters to preserve their order if different settings yield the same result
+    # Sort clusters to preserve their order
+    # if different settings yield the same result.
     clusters.sort()
     return clusters
 
