@@ -45,7 +45,8 @@ include_subcategory = false
 include_topic = true
 
 # Whether to include rows with questions marked as duplicates.
-# If set to false, then column with duplication flags is not included.
+# If set to false, the column with duplication flags is STILL included
+# for compatibility with the querier.
 include_duplicates = true
 
 # Model to use as a sentence transformer.

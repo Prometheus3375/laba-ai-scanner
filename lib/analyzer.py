@@ -69,7 +69,6 @@ def make_row_maker(
         include_category: bool,
         include_subcategory: bool,
         include_topic: bool,
-        include_duplicate_flag: bool,
         ) -> RowMaker:
     """
     Creates a :class:`RowMaker` with the given settings.
@@ -90,8 +89,7 @@ def make_row_maker(
 
         row.append(level)
         row.append(question)
-        if include_duplicate_flag:
-            row.append(flag)
+        row.append(flag)
 
         return row
 
@@ -117,7 +115,6 @@ def analyze(config: AnalyzerConfig, /) -> None:
         include_category=config.include_category,
         include_subcategory=config.include_subcategory,
         include_topic=config.include_topic,
-        include_duplicate_flag=include_duplicates,
         )
 
     iterator = iterate_questions(
