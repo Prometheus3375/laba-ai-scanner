@@ -5,8 +5,6 @@ from collections.abc import Iterator, Mapping, Sequence
 from logging import getLogger
 from typing import Protocol
 
-from sentence_transformers import SentenceTransformer
-
 from .cluster import clusterize_sentences
 from .configs import AnalyzerConfig
 from .functions import iterate_questions
@@ -100,6 +98,8 @@ def analyze(config: AnalyzerConfig, /) -> None:
     """
     Runs analysis using the given configuration.
     """
+    from sentence_transformers import SentenceTransformer
+
     logger.info('Starting the analyzer...')
 
     model = SentenceTransformer(config.sentence_transformer_model)
